@@ -12,15 +12,28 @@ deferring to an oauth2 provider.
 url(r'/admin/oauth/', include('oauthadmin.urls'))
 ```
 
-2. Install the middleware in your project's settings.py:
+2. Include oauthadmin in your INSTALLED_APPS:
+
+```python
+INSTALLED_APPS = (
+    'oauthadmin'
+)
+````
+
+
+3. Install the middleware in your project's settings.py:
 
 ```python
 MIDDLEWARE_CLASSES = (
-    'oauthadmin.middleware.OauthAdminMiddleware'
+    'oauthadmin.middleware.OauthAdminSessionMiddleware'
 )
 
+
 ```
-3. Set up all the correct options (see below for available options)
+
+ *make sure that this comes BEFORE 'django.contrib.sessions.middleware.SessionMiddleware'*
+
+4. Set up all the correct options (see below for available options)
 
 ## Settings
 
