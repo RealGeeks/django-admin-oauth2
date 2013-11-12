@@ -22,4 +22,3 @@ class AdminSessionMiddleware(object):
         if _starts_with_list(request.path, dj_settings.ADMIN_SESSION_URLS):
             SessionMiddleware().process_response(request,response)
         return response
-
