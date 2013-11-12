@@ -1,5 +1,5 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns
 
 urlpatterns = patterns('',
-    (r'login/', 'views.login'),
+    (r'login/', 'oauthadmin.views.login'),
 )

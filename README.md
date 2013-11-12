@@ -27,9 +27,18 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'oauthadmin.middleware.OauthAdminSessionMiddleware'
 )
+```
 
+4. If you are on Django 1.5 or above, you'll need to set your session serializer
+to "django.contrib.sessions.serializers.PickleSerializer" since we are storing the
+pickled user object in the session.
+
+```python
+SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
 
 ```
+
+
 
  *make sure that this comes BEFORE 'django.contrib.sessions.middleware.SessionMiddleware'*
 
@@ -40,3 +49,6 @@ MIDDLEWARE_CLASSES = (
  * OAUTHADMIN_GET_USER: This is function that is given the oauth token and returns
    a django.auth.models.User model corresponding to the currently logged-in user.
    You can set permissions on this user object and stuff.
+ * OAUTHADMIN_CLIENT_ID: Your oauth client ID
+ * OAUTHADMIN_CLIENT_SECRET: Oauth client secret
+ * OATHADMIN_AUTH_URL: Oauth provider URL

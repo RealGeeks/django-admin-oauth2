@@ -13,4 +13,4 @@ class OauthAdminSessionMiddleware(object):
         SessionMiddleware().process_request(request)
         if 'user' in request.session:
             request.user = request.session['user']
-            request._user_cache = request.session['user']
+            request._cached_user = request.session['user']
