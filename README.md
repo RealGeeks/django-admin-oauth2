@@ -1,6 +1,6 @@
 # django-admin-oauth2
 
-A django app that replaces the django admin authentication mechanism by 
+A django app that replaces the django admin authentication mechanism by
 deferring to an oauth2 provider.
 
 
