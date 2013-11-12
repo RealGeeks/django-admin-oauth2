@@ -49,6 +49,8 @@ SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
  * OAUTHADMIN_GET_USER: This is function that is given the oauth token and returns
    a django.auth.models.User model corresponding to the currently logged-in user.
    You can set permissions on this user object and stuff.
- * OAUTHADMIN_CLIENT_ID: Your oauth client ID
- * OAUTHADMIN_CLIENT_SECRET: Oauth client secret
- * OATHADMIN_AUTH_URL: Oauth provider URL
+ * OAUTHADMIN_CLIENT_ID: Your oAuth client ID
+ * OAUTHADMIN_CLIENT_SECRET: oAuth client secret
+ * OAUTHADMIN_BASE_URL: The landing point for all oAuth related queries.
+ * OATHADMIN_AUTH_URL: oAuth provider URL
+ * OAUTHADMIN_TOKEN_URL: oAuth bearer token provider URL
