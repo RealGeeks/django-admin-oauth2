@@ -1,3 +1,5 @@
+from django.conf import settings as global_settings
+
 defaults = {
     # default values for all django-oauth2-admin settings
     "GET_USER": 'oauthadmin.stubs.get_user'
