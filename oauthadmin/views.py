@@ -3,8 +3,8 @@ from urllib import quote_plus
 
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-from django.utils.module_loading import import_by_path
 
+from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
 
 def destroy_session(request):
