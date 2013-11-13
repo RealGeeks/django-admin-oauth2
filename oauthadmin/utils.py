@@ -1,6 +1,8 @@
 from django.core.exceptions import ImproperlyConfigured
 from importlib import import_module
 
+# Note: This is a copy-paste from django 1.6 for backwards-compat reasons
+
 def import_by_path(dotted_path, error_prefix=''):
     """
     Import a dotted module path and return the attribute/class designated by the
