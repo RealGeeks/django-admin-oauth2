@@ -35,7 +35,7 @@ def callback(request):
     token = oauth.fetch_token(
         app_setting('TOKEN_URL'),
         client_secret=app_setting('CLIENT_SECRET'),
-        authorization_response=request.get_full_path()
+        authorization_response=app_setting('AUTH_URL') + "?" + request.GET.urlencode()
     )
 
     user = import_by_path(app_setting('GET_USER'))(token)
@@ -48,7 +48,7 @@ def callback(request):
 def logout(request):
     oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
     oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
-    destroy_session()
+    destroy_session(request)
 
     return redirect(request.build_absolute_uri('/'))
 

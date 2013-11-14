@@ -10,6 +10,7 @@ def _starts_with_list(str, list):
 
 class OauthAdminSessionMiddleware(object):
     def process_request(self,request):
+        import pdb; pdb.set_trace()
         SessionMiddleware().process_request(request)
         if 'user' in request.session:
             request.user = request.session['user']
