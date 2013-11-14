@@ -8,4 +8,4 @@ defaults = {
 global_prefix = 'OAUTHADMIN_'
 
 def app_setting(name):
-    return getattr(global_settings, global_prefix+name, defaults[name])
+    return getattr(global_settings, global_prefix+name, defaults.get(name))
