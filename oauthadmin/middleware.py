@@ -1,6 +1,3 @@
-from django.conf import settings as dj_settings
-
-
 class OauthAdminSessionMiddleware(object):
     def process_request(self, request):
         if hasattr(request, 'session') and 'user' in request.session:
