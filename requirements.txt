@@ -1,0 +1,11 @@
+Django==1.6.1
+cov-core==1.7
+coverage==3.7.1
+mock==1.0.1
+oauthlib==0.6.0
+py==1.4.19
+pytest==2.5.1
+pytest-cov==1.6
+requests==2.1.0
+requests-oauthlib==0.4.0
+wsgiref==0.1.2
