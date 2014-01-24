@@ -25,6 +25,7 @@ setup(
     ],
     license='MIT',
     install_requires=[
+        'oauthlib',
     ],
     packages=['oauthadmin'],
 )
