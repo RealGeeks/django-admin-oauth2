@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 from os.path import dirname, join
 
 try:
@@ -6,6 +6,14 @@ try:
         README = f.read()
 except IOError:
     README = '<no description>'
+
+install_requires = ['oauthlib']
+
+try:
+    import importlib
+except ImportError:
+    install_requires.append('importlib')
+
 
 setup(
     name='django-oauth2-admin',
@@ -24,8 +32,6 @@ setup(
         'Programming Language :: Python',
     ],
     license='MIT',
-    install_requires=[
-        'oauthlib',
-    ],
+    install_requires=install_requires,
     packages=['oauthadmin'],
 )
