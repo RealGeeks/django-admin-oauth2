@@ -52,3 +52,17 @@ Step 5: Set up all the correct options (see below for available options)
  * OAUTHADMIN_BASE_URL: The landing point for all oAuth related queries.
  * OATHADMIN_AUTH_URL: oAuth provider URL
  * OAUTHADMIN_TOKEN_URL: oAuth bearer token provider URL
+
+## Testing
+
+If you want to test this app, install the requirements needed for testing:
+
+```
+pip install -r test-requirements.txt
+```
+
+and then run the tests with the provided script:
+
+```
+./runtests.sh
+```
