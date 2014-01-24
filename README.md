@@ -8,13 +8,15 @@ deferring to an oauth2 provider.
 
 ## Installation
 
-Step 1:  Include the django-admin-oauth2 urlconf in your project's urls.py:
+Step 1: `pip install django-admin-oauth2` and include it in your project's requirements
+
+Step 2:  Include the django-admin-oauth2 urlconf in your project's urls.py:
 
 ```python
 url(r'/admin/oauth/', include('oauthadmin.urls'))
 ```
 
-Step 2: Include oauthadmin in your INSTALLED_APPS:
+Step 3: Include oauthadmin in your INSTALLED_APPS:
 
 ```python
 INSTALLED_APPS = (
@@ -23,7 +25,7 @@ INSTALLED_APPS = (
 ````
 
 
-Step 3: Install the middleware in your project's settings.py:
+Step 4: Install the middleware in your project's settings.py:
 
 ```python
 MIDDLEWARE_CLASSES = (
@@ -33,7 +35,7 @@ MIDDLEWARE_CLASSES = (
 
 *make sure that this comes AFTER 'django.contrib.sessions.middleware.SessionMiddleware'*
 
-Step 4: If you are on Django 1.5 or above, you'll need to set your session serializer
+Step 5: If you are on Django 1.5 or above, you'll need to set your session serializer
 to "django.contrib.sessions.serializers.PickleSerializer" since we are storing the
 pickled user object in the session.
 
@@ -42,7 +44,7 @@ SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
 
 ```
 
-Step 5: Set up all the correct options (see below for available options)
+Step 6: Set up all the correct options (see below for available options)
 
 ## Settings
 
