@@ -3,6 +3,8 @@
 A django app that replaces the django admin authentication mechanism by
 deferring to an oauth2 provider.
 
+[![Build Status](https://travis-ci.org/RealGeeks/django-admin-oauth2.png?branch=master)](https://travis-ci.org/RealGeeks/django-admin-oauth2)
+
 
 ## Installation
 
