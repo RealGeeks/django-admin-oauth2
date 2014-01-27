@@ -1,3 +1,5 @@
+from time import time
+
 from requests_oauthlib import OAuth2Session
 from urllib import quote_plus
 
@@ -40,6 +42,7 @@ def callback(request):
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
+    request.session['utctimestamp'] = int(time())
     request.session['oauth_token'] = token
     request.session['user'] = user
 
