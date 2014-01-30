@@ -9,9 +9,9 @@ class OauthAdminSessionMiddleware(object):
             request.user = request.session['user']
             request._cached_user = request.session['user']
 
-            if int(time()) - request.session['utctimestamp'] >= app_setting('OAUTHADMIN_PING_INTERVAL'):
+            if int(time()) - request.session.get('utctimestamp', 0) >= app_setting('PING_INTERVAL'):
                 request.session['utctimestamp'] = int(time())
-                is_valid = import_by_path(app_setting('OAUTHADMIN_PING'))(request.session['oauth_token'])
+                is_valid = import_by_path(app_setting('PING'))(request.session['oauth_token'])
                 if not is_valid:
                     destroy_session(request)
 

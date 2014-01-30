@@ -50,9 +50,13 @@ def callback(request):
     
 
 def logout(request):
-    oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
-    oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
-    destroy_session(request)
+
+
+    if 'oauth_token' in request.session:
+        oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
+        oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
+
+        destroy_session(request)
 
     return redirect(request.build_absolute_uri('/'))
 
