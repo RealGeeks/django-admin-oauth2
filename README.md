@@ -72,3 +72,6 @@ and then run the tests with the provided script:
 ```
 ./runtests.sh
 ```
+
+## Changelog
+0.2.0: Added support for pinging the auth server to make sure the token is still valid
