@@ -1,3 +1,5 @@
+from time import time
+
 from requests_oauthlib import OAuth2Session
 from urllib import quote_plus
 
@@ -40,6 +42,7 @@ def callback(request):
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
+    request.session['utctimestamp'] = int(time())
     request.session['oauth_token'] = token
     request.session['user'] = user
 
@@ -47,9 +50,13 @@ def callback(request):
     
 
 def logout(request):
-    oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
-    oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
-    destroy_session(request)
+
+
+    if 'oauth_token' in request.session:
+        oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
+        oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
+
+        destroy_session(request)
 
     return redirect(request.build_absolute_uri('/'))
 
