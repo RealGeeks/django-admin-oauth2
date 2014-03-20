@@ -1,6 +1,8 @@
 from mock import Mock
-from oauthadmin.middleware import OauthAdminSessionMiddleware
+from freezegun import freeze_time
 from django.contrib.auth.models import AnonymousUser
+from django.test.utils import override_settings
+from oauthadmin.middleware import OauthAdminSessionMiddleware
 
 def setup_module(mod):
    global mw
@@ -26,3 +28,26 @@ def test_process_request_with_user():
     assert mw.process_request(request) is None
     assert isinstance(request.user, dict)
     assert request.user.get('id') is data['id']
+
+
+mock_pinger = Mock()
+
+@override_settings(OAUTHADMIN_PING_INTERVAL=5)
+@override_settings(OAUTHADMIN_PING='test.test_middleware.mock_pinger')
+def test_process_request_with_reverify_interval():
+    request.session = {'oauth_token': 1234, 'user':1234}
+    with freeze_time('2012-08-29 00:00:00'):
+        # first request should set timestamp
+        # and verify with pinger.
+        mw.process_request(request)
+        assert mock_pinger.called
+        mock_pinger.called = False
+    with freeze_time('2012-08-29 00:00:01'):
+        # second request should not call pinger
+        mw.process_request(request)
+        assert not mock_pinger.called
+    with freeze_time('2012-08-29 00:01:01'):
+        # third request, after the ping interval
+        # has passed, should call pinger.
+        mw.process_request(request)
+        assert mock_pinger.called

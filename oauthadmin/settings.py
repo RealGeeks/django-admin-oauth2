@@ -2,7 +2,8 @@ from django.conf import settings as global_settings
 
 defaults = {
     # default values for all django-oauth2-admin settings
-    "GET_USER": 'oauthadmin.stubs.get_user'
+    "GET_USER": 'oauthadmin.stubs.get_user',
+    "PING_INTERVAL": 300,
 }
 
 global_prefix = 'OAUTHADMIN_'
