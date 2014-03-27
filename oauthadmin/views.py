@@ -13,7 +13,7 @@ from oauthadmin.settings import app_setting
 def destroy_session(request):
 
     # These session variables MAY not exist at this point.
-    for key in ['oauth_state', 'oauth_token', 'uid', 'user']:
+    for key in ['oauth_state', 'oauth_token', 'uid', 'user','last_verified_at']:
         try:
             del request.session[key]
         except KeyError:
@@ -42,7 +42,7 @@ def callback(request):
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
-    request.session['utctimestamp'] = int(time())
+    request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token
     request.session['user'] = user
 
