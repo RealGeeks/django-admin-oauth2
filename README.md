@@ -5,6 +5,9 @@ deferring to an oauth2 provider.
 
 [![Build Status](https://travis-ci.org/RealGeeks/django-admin-oauth2.png?branch=master)](https://travis-ci.org/RealGeeks/django-admin-oauth2)
 
+# IMPORTANT SECURITY NOTE
+
+If you use this package, you should install the latest development version of `request_oauthlib` in order to get [an important commit that fixes a CSRF vulnerability](https://github.com/requests/requests-oauthlib/commit/c5cad15edc28040f85dba52ceebb18e11bd9e759)
 
 ## Installation
 
@@ -74,4 +77,5 @@ and then run the tests with the provided script:
 ```
 
 ## Changelog
-0.2.0: Added support for pinging the auth server to make sure the token is still valid
+ * 0.2.1: Added tests for the ping function and fixed a bug with the session variable name for the ping timestamp.
+ * 0.2.0: Added support for pinging the auth server to make sure the token is still valid
