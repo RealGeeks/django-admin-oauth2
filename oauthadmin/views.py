@@ -33,6 +33,8 @@ def login(request):
 
 
 def callback(request):
+    if 'oauth_state' not in request.session:
+        return login(request)
     oauth = OAuth2Session(app_setting('CLIENT_ID'), state=request.session['oauth_state'])
     token = oauth.fetch_token(
         app_setting('TOKEN_URL'),
