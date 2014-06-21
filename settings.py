@@ -6,3 +6,4 @@ CACHES = {
 
 ROOT_URLCONF = "oauthadmin.urls"
 SECRET_KEY = "secret"
+ALLOWED_HOSTS = ['testserver']
