@@ -81,6 +81,7 @@ and then run the tests with the provided script:
 ```
 
 ## Changelog
+ * 0.2.3: Redirect to the log if the state is mismatching
  * 0.2.2: Redirect to the log if the state goes missing (sometimes people bookmark the login url)
  * 0.2.1: Added tests for the ping function and fixed a bug with the session variable name for the ping timestamp.
  * 0.2.0: Added support for pinging the auth server to make sure the token is still valid
