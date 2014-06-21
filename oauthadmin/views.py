@@ -1,10 +1,12 @@
 from time import time
 
 from requests_oauthlib import OAuth2Session
+from oauthlib.oauth2.rfc6749.errors import MismatchingStateError
 from urllib import quote_plus
 
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 
 from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
@@ -34,13 +36,16 @@ def login(request):
 
 def callback(request):
     if 'oauth_state' not in request.session:
-        return login(request)
+        return HttpResponseRedirect(request.build_absolute_uri(reverse('oauthadmin.views.login')))
     oauth = OAuth2Session(app_setting('CLIENT_ID'), state=request.session['oauth_state'])
-    token = oauth.fetch_token(
-        app_setting('TOKEN_URL'),
-        client_secret=app_setting('CLIENT_SECRET'),
-        authorization_response=app_setting('AUTH_URL') + "?" + request.GET.urlencode()
-    )
+    try:
+        token = oauth.fetch_token(
+            app_setting('TOKEN_URL'),
+            client_secret=app_setting('CLIENT_SECRET'),
+            authorization_response=app_setting('AUTH_URL') + "?" + request.GET.urlencode()
+        )
+    except MismatchingStateError:
+        return HttpResponseRedirect(request.build_absolute_uri(reverse('oauthadmin.views.login')))
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
@@ -49,11 +54,9 @@ def callback(request):
     request.session['user'] = user
 
     return redirect(request.build_absolute_uri('/admin'))
-    
+
 
 def logout(request):
-
-
     if 'oauth_token' in request.session:
         oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
         oauth.get(app_setting('BASE_URL') + 'destroy_tokens')

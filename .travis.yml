@@ -8,4 +8,4 @@ install:
   - pip install .
   - pip install -r test-requirements.txt
 # command to run tests
-script: ./runtests.sh 
+script: ./runtests.sh
