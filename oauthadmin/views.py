@@ -1,7 +1,7 @@
 from time import time
 
 from requests_oauthlib import OAuth2Session
-from oauthlib.oauth2.rfc6749.errors import MismatchingStateError
+from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
 from urllib import quote_plus
 
 from django.shortcuts import redirect
@@ -44,7 +44,7 @@ def callback(request):
             client_secret=app_setting('CLIENT_SECRET'),
             authorization_response=app_setting('AUTH_URL') + "?" + request.GET.urlencode()
         )
-    except MismatchingStateError:
+    except (MismatchingStateError, InvalidGrantError):
         return HttpResponseRedirect(request.build_absolute_uri(reverse('oauthadmin.views.login')))
 
     user = import_by_path(app_setting('GET_USER'))(token)

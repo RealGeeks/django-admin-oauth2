@@ -1,7 +1,7 @@
 import mock
 import pytest
 from oauthadmin.views import destroy_session, login, callback, logout
-from oauthlib.oauth2.rfc6749.errors import MismatchingStateError
+from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
 from django.test.client import RequestFactory
 
 
@@ -69,6 +69,18 @@ def test_callback_with_missing_state(import_by_path, app_setting, OAuth2Session,
     request = request_factory.get('/')
     request.session = {}
     app_setting.return_value = 'app-setting'
+    resp = callback(request)
+    assert resp.status_code == 302
+    assert resp['location'] == 'http://testserver/login/'
+
+@mock.patch('oauthadmin.views.OAuth2Session')
+@mock.patch('oauthadmin.views.app_setting')
+@mock.patch('oauthadmin.views.import_by_path')
+def test_callback_with_invalid_grant(import_by_path, app_setting, OAuth2Session, request_factory):
+    request = request_factory.get('/')
+    request.session = {'oauth_state':'foo'}
+    app_setting.return_value = 'app-setting'
+    OAuth2Session.return_value = mock.Mock(fetch_token = mock.Mock(side_effect=InvalidGrantError))
     resp = callback(request)
     assert resp.status_code == 302
     assert resp['location'] == 'http://testserver/login/'
