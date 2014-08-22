@@ -78,9 +78,16 @@ and then run the tests with the provided script:
 
 ```
 ./runtests.sh
+
 ```
 
+## Notes
+
+When the CSRF validation token doesn't match, django-admin-oauth2 will redirect back to the login url so it can retry the authorization step.  Sometimes people will bookmark the oauth server with an out-of-date CSRF state string, this is better than showing them an error page.
+
+
 ## Changelog
+ * 0.2.6: Roundtrip original URL accessed through the oauth process so you can go to the URL you requested after the authorization process finishes.  Thanks @igorsobreira.
  * 0.2.5: Fix bug where failing ping was not invalidating session immediately, only on the second request.
  * 0.2.4: Redirect to the login if the grant is invalid
  * 0.2.3: Redirect to the login if the state is mismatching
