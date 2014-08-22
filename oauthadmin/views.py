@@ -5,7 +5,7 @@ from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantEr
 from urllib import quote_plus
 
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.http import HttpResponseRedirect
 
 from oauthadmin.utils import import_by_path
@@ -22,9 +22,32 @@ def destroy_session(request):
             pass
 
 def login(request):
+    # this view can be called directly by django admin site from
+    # any url, or can be accessed by the login url if the urls
+    # from this app were included
+    try:
+        login_url = reverse('oauthadmin.views.login')
+    except NoReverseMatch:
+        login_uri = None
+
+    if request.path == login_url:
+        # if this view is being accessed from login url look for 'next'
+        # in query string to use as destination after the login is complete
+        next = request.GET.get('next')
+    else:
+        # otherwise the django admin site called this view from another view.
+        # Django admin doesn't redirect to login url if login is required, it
+        # calls the view directly (django 1.7 fixed this and redirects and we
+        # don't support it yet)
+        next = request.get_full_path()
+
+    redirect_uri = request.build_absolute_uri(reverse('oauthadmin.views.callback'))
+    if next:
+        redirect_uri += '?next='+next
+
     oauth = OAuth2Session(
         client_id=app_setting('CLIENT_ID'),
-        redirect_uri=request.build_absolute_uri(reverse('oauthadmin.views.callback')),
+        redirect_uri=redirect_uri,
         scope=["default"],
     )
     authorization_url, state = oauth.authorization_url(app_setting('AUTH_URL'))
@@ -53,7 +76,9 @@ def callback(request):
     request.session['oauth_token'] = token
     request.session['user'] = user
 
-    return redirect(request.build_absolute_uri('/admin'))
+    next = request.GET.get('next', '/admin')
+
+    return redirect(request.build_absolute_uri(next))
 
 
 def logout(request):
