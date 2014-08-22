@@ -81,6 +81,7 @@ and then run the tests with the provided script:
 ```
 
 ## Changelog
+ * 0.2.5: Fix bug where failing ping was not invalidating session immediately, only on the second request.
  * 0.2.4: Redirect to the login if the grant is invalid
  * 0.2.3: Redirect to the login if the state is mismatching
  * 0.2.2: Redirect to the login if the state goes missing (sometimes people bookmark the login url)
