@@ -3,6 +3,7 @@ import pytest
 from oauthadmin.views import destroy_session, login, callback, logout
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
 from django.test.client import RequestFactory
+from django.core.urlresolvers import reverse
 
 
 SESSION_VARIABLES = ['oauth_state', 'oauth_token', 'uid', 'user']
@@ -40,7 +41,7 @@ def test_login(app_setting, OAuth2Session, request_factory):
     OAuth2Session.return_value = mock.Mock(
         authorization_url = mock.Mock(return_value = ('https://foo', 'state-variable'))
     )
-    request = request_factory.post('/')
+    request = request_factory.get(reverse('oauthadmin.views.login'))
     request.session = {}
     request.build_absolute_uri = mock.Mock(return_value='https://test.com/construct-redirect')
 
@@ -48,7 +49,60 @@ def test_login(app_setting, OAuth2Session, request_factory):
 
     resp = login(request)
     assert resp.status_code == 302
+    assert resp['location'] == 'https://foo'
     assert request.session.get('oauth_state') == 'state-variable'
+
+@mock.patch('oauthadmin.views.OAuth2Session')
+def test_login_redirect_uri(OAuth2Session, request_factory):
+    OAuth2Session.return_value = mock.Mock(
+        authorization_url = mock.Mock(return_value = ('https://foo', 'state-variable'))
+    )
+    request = request_factory.get(reverse('oauthadmin.views.login'))
+    request.session = {}
+    request.build_absolute_uri = mock.Mock(return_value='https://test.com/construct-redirect')
+
+    resp = login(request)
+
+    OAuth2Session.assert_called_once_with(
+        client_id = 'test-client-id',
+        redirect_uri = u'https://test.com/construct-redirect',
+        scope = ['default'],
+    )
+
+@mock.patch('oauthadmin.views.OAuth2Session')
+def test_login_redirect_uri_with_next_from_url(OAuth2Session, request_factory):
+    OAuth2Session.return_value = mock.Mock(
+        authorization_url = mock.Mock(return_value = ('https://foo', 'state-variable'))
+    )
+    request = request_factory.get(reverse('oauthadmin.views.login') + '?next=/admin/content/')
+    request.session = {}
+    request.build_absolute_uri = mock.Mock(return_value='https://test.com/construct-redirect')
+
+    resp = login(request)
+
+    OAuth2Session.assert_called_once_with(
+        redirect_uri = u'https://test.com/construct-redirect?next=/admin/content/',
+        client_id = mock.ANY,
+        scope = mock.ANY,
+    )
+
+@mock.patch('oauthadmin.views.OAuth2Session')
+def test_login_redirect_uri_with_next_as_current_url(OAuth2Session, request_factory):
+    OAuth2Session.return_value = mock.Mock(
+        authorization_url = mock.Mock(return_value = ('https://foo', 'state-variable'))
+    )
+    request = request_factory.get('/admin/content/')
+    request.session = {}
+    request.build_absolute_uri = mock.Mock(return_value='https://test.com/construct-redirect')
+
+    resp = login(request)
+
+    OAuth2Session.assert_called_once_with(
+        redirect_uri = u'https://test.com/construct-redirect?next=/admin/content/',
+        client_id = mock.ANY,
+        scope = mock.ANY,
+    )
+
 
 @mock.patch('oauthadmin.views.OAuth2Session')
 @mock.patch('oauthadmin.views.app_setting')
@@ -89,7 +143,7 @@ def test_callback_with_invalid_grant(import_by_path, app_setting, OAuth2Session,
 @mock.patch('oauthadmin.views.app_setting')
 @mock.patch('oauthadmin.views.import_by_path')
 def test_callback(import_by_path, app_setting, OAuth2Session, request_factory):
-    request = request_factory.get('/')
+    request = request_factory.get(reverse('oauthadmin.views.callback'))
     request.session = {'oauth_state': 'state-variable'}
     OAuth2Session.return_value = mock.Mock(
         fetch_token = mock.Mock(return_value = 'token')
@@ -101,8 +155,27 @@ def test_callback(import_by_path, app_setting, OAuth2Session, request_factory):
 
     resp = callback(request)
     assert resp.status_code == 302
+    assert resp['location'] == 'http://testserver/admin'
     assert request.session.get('oauth_token') == 'token'
     assert request.session.get('user') == 'test-user'
+
+@mock.patch('oauthadmin.views.OAuth2Session')
+@mock.patch('oauthadmin.views.app_setting')
+@mock.patch('oauthadmin.views.import_by_path')
+def test_callback_redirect_to_next(import_by_path, app_setting, OAuth2Session, request_factory):
+    request = request_factory.get(reverse('oauthadmin.views.callback') + '?next=/admin/content/')
+    request.session = {'oauth_state': 'state-variable'}
+    OAuth2Session.return_value = mock.Mock(
+        fetch_token = mock.Mock(return_value = 'token')
+    )
+    app_setting.return_value = 'app-setting'
+    ibp = mock.Mock()
+    ibp.return_value = 'test-user'
+    import_by_path.return_value = ibp
+
+    resp = callback(request)
+    assert resp.status_code == 302
+    assert resp['location'] == 'http://testserver/admin/content/'
 
 @mock.patch('oauthadmin.views.OAuth2Session')
 @mock.patch('oauthadmin.views.app_setting')
