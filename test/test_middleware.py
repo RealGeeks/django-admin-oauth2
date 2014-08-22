@@ -30,6 +30,17 @@ def test_process_request_with_user():
     assert request.user.get('id') is data['id']
 
 
+false_mock_pinger = Mock(return_value = False)
+
+@override_settings(OAUTHADMIN_PING_INTERVAL=5)
+@override_settings(OAUTHADMIN_PING='test.test_middleware.false_mock_pinger')
+def test_that_anonymoususer_goes_in_request_user_if_ping_fails():
+    request.session = {'user':'not anonymous', 'oauth_token':'abc'}
+    request.user = 'not anonymous'
+    mw.process_request(request)
+    assert isinstance(request.user, AnonymousUser)
+
+
 mock_pinger = Mock()
 
 @override_settings(OAUTHADMIN_PING_INTERVAL=5)

@@ -16,6 +16,8 @@ def _verify_ping_interval(request, ping_interval, ping_func):
     is_valid = ping_func(request.session['oauth_token'])
     if not is_valid:
         destroy_session(request)
+        from django.contrib.auth.models import AnonymousUser
+        request.user = AnonymousUser()
 
 class OauthAdminSessionMiddleware(object):
     def process_request(self, request):
