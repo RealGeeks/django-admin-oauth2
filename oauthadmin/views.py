@@ -25,12 +25,7 @@ def login(request):
     # this view can be called directly by django admin site from
     # any url, or can be accessed by the login url if the urls
     # from this app were included
-    try:
-        login_url = reverse('oauthadmin.views.login')
-    except NoReverseMatch:
-        login_uri = None
-
-    if request.path == login_url:
+    if request.path == reverse('oauthadmin.views.login'):
         # if this view is being accessed from login url look for 'next'
         # in query string to use as destination after the login is complete
         next = request.GET.get('next')
