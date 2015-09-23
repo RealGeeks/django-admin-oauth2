@@ -63,6 +63,7 @@ Step 6: Set up all the correct options (see below for available options)
  * OAUTHADMIN_BASE_URL: The landing point for all oAuth related queries.
  * OATHADMIN_AUTH_URL: oAuth provider URL
  * OAUTHADMIN_TOKEN_URL: oAuth bearer token provider URL
+ * OAUTHADMIN_INFO_URL: URL of detail for mine in oAuth provider
  * OAUTHADMIN_PING_INTERVAL (optional, defaults to 300): Minimum number of seconds between ping requests
  * OAUTHADMIN_PING: (optional, defaults to None) This optional function takes an oauth token and returns True if it's still valid and False if it's no longer valid (if they have logged out of the oauth server)
 
