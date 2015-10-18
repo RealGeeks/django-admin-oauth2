@@ -5,10 +5,6 @@ deferring to an oauth2 provider.
 
 [![Build Status](https://travis-ci.org/RealGeeks/django-admin-oauth2.png?branch=master)](https://travis-ci.org/RealGeeks/django-admin-oauth2)
 
-# IMPORTANT SECURITY NOTE
-
-If you use this package, you should install the latest development version of `requests_oauthlib` in order to get [an important commit that fixes a CSRF vulnerability](https://github.com/requests/requests-oauthlib/commit/c5cad15edc28040f85dba52ceebb18e11bd9e759)
-
 # Support
 
 django-admin-oauth2 should support Python 2.6, 2.7, pypy, and Django versions 1.4 through 1.7
