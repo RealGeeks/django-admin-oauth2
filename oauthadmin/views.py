@@ -1,25 +1,32 @@
 from time import time
 
 from requests_oauthlib import OAuth2Session
-from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
+from oauthlib.oauth2.rfc6749.errors import (MismatchingStateError,
+                                            InvalidGrantError)
 from urllib import quote_plus
 
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 def destroy_session(request):
 
     # These session variables MAY not exist at this point.
-    for key in ['oauth_state', 'oauth_token', 'uid', 'user','last_verified_at']:
+    for key in ['oauth_state', 'oauth_token',
+                'uid', 'user', 'last_verified_at']:
         try:
             del request.session[key]
         except KeyError:
             pass
+
 
 def login(request):
     # this view can be called directly by django admin site from
@@ -36,9 +43,10 @@ def login(request):
         # don't support it yet)
         next = request.get_full_path()
 
-    redirect_uri = request.build_absolute_uri(reverse('oauthadmin.views.callback'))
+    redirect_uri = request.build_absolute_uri(
+        reverse('oauthadmin.views.callback'))
     if next:
-        redirect_uri += '?next='+next
+        redirect_uri += '?next=' + next
 
     oauth = OAuth2Session(
         client_id=app_setting('CLIENT_ID'),
@@ -54,18 +62,32 @@ def login(request):
 
 def callback(request):
     if 'oauth_state' not in request.session:
-        return HttpResponseRedirect(request.build_absolute_uri(reverse('oauthadmin.views.login')))
-    oauth = OAuth2Session(app_setting('CLIENT_ID'), state=request.session['oauth_state'])
+        return HttpResponseRedirect(
+            request.build_absolute_uri(reverse('oauthadmin.views.login')))
+    oauth = OAuth2Session(
+        app_setting('CLIENT_ID'), state=request.session['oauth_state'])
     try:
         token = oauth.fetch_token(
             app_setting('TOKEN_URL'),
             client_secret=app_setting('CLIENT_SECRET'),
-            authorization_response=app_setting('AUTH_URL') + "?" + request.GET.urlencode()
+            authorization_response=request.build_absolute_uri()
         )
     except (MismatchingStateError, InvalidGrantError):
-        return HttpResponseRedirect(request.build_absolute_uri(reverse('oauthadmin.views.login')))
+        return HttpResponseRedirect(
+            request.build_absolute_uri(reverse('oauthadmin.views.login')))
 
-    user = import_by_path(app_setting('GET_USER'))(token)
+    info_url = app_setting('INFO_URL')
+    if info_url:
+        info = oauth.request(
+            'GET',
+            info_url,
+        )
+        log.debug('info content: %s', info.content)
+        user = import_by_path(app_setting('GET_USER'))(info.json())
+    else:
+        user = import_by_path(app_setting('GET_USER'))(token)
+
+    log.debug('stored user: %r', user)
 
     request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token
@@ -78,7 +100,8 @@ def callback(request):
 
 def logout(request):
     if 'oauth_token' in request.session:
-        oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
+        oauth = OAuth2Session(
+            app_setting('CLIENT_ID'), token=request.session['oauth_token'])
         oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
 
         destroy_session(request)
@@ -87,4 +110,5 @@ def logout(request):
 
 
 def logout_redirect(request):
-    return redirect(app_setting('BASE_URL') + 'logout?next=' + quote_plus(request.build_absolute_uri(reverse('oauthadmin.views.logout'))))
+    return redirect(app_setting('BASE_URL') + 'logout?next=' + quote_plus(
+        request.build_absolute_uri(reverse('oauthadmin.views.logout'))))
