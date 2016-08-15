@@ -67,8 +67,9 @@ def callback(request):
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
+    import pdb;pdb.set_trace()
     request.session['last_verified_at'] = int(time())
-    request.session['oauth_token'] = token
+    request.session['oauth_token'] = {'access_token': token['access_token'], 'type': token['type']}
     request.session['user'] = user
 
     next = request.GET.get('next', '/admin')

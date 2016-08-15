@@ -1,8 +1,9 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
+import oauthadmin.views
 
-urlpatterns = patterns('',
-    (r'login/', 'oauthadmin.views.login'),
-    (r'callback/', 'oauthadmin.views.callback'),
-    (r'logout/', 'oauthadmin.views.logout'),
-    (r'logout_redirect/', 'oauthadmin.views.logout_redirect'),
-)
+urlpatterns = [
+    url(r'login/', oauthadmin.views.login),
+    url(r'callback/', oauthadmin.views.callback),
+    url(r'logout/', oauthadmin.views.logout),
+    url(r'logout_redirect/', oauthadmin.views.logout_redirect),
+]
