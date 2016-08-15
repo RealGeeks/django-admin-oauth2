@@ -3,6 +3,13 @@ from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
 from oauthadmin.views import destroy_session
 
+try:
+    # https://docs.djangoproject.com/en/1.10/topics/http/middleware/#upgrading-middleware
+    from django.utils.deprecation import MiddlewareMixin
+    BaseClass = MiddlewareMixin
+except ImportError:
+    BaseClass = object
+
 def _ping_timeout_expired(timestamp, ping_interval):
     return time() - timestamp > ping_interval
 
@@ -19,7 +26,7 @@ def _verify_ping_interval(request, ping_interval, ping_func):
         from django.contrib.auth.models import AnonymousUser
         request.user = AnonymousUser()
 
-class OauthAdminSessionMiddleware(object):
+class OauthAdminSessionMiddleware(BaseClass):
     def process_request(self, request):
         if hasattr(request, 'session') and 'user' in request.session:
             request.user = request.session['user']

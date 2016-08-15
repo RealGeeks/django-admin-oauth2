@@ -2,7 +2,10 @@ from time import time
 
 from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
-from urllib import quote_plus
+try:
+    from urllib import quote_plus
+except ImportError:
+    from urllib.parse import quote_plus
 
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse, NoReverseMatch

@@ -7,7 +7,7 @@ deferring to an oauth2 provider.
 
 # Support
 
-django-admin-oauth2 should support Python 2.6, 2.7, pypy, and Django versions 1.6 through 1.10
+django-admin-oauth2 should support Python 2.7, pypy, and Django versions 1.6 through 1.10
 
 ## Installation
 
