@@ -1,7 +1,5 @@
 language: python
 env:
-  - DJANGO=1.4
-  - DJANGO=1.5
   - DJANGO=1.6
   - DJANGO=1.7
   - DJANGO=1.8
@@ -16,8 +14,6 @@ python:
 install:
   - pip install .
   - pip install -r test-requirements.txt
-  - if [ $DJANGO = "1.4" ] ; then pip install https://github.com/django/django/archive/stable/1.4.x.zip#egg=django; fi
-  - if [ $DJANGO = "1.5" ] ; then pip install https://github.com/django/django/archive/stable/1.5.x.zip#egg=django; fi
   - if [ $DJANGO = "1.6" ] ; then pip install https://github.com/django/django/archive/stable/1.6.x.zip#egg=django; fi
   - if [ $DJANGO = "1.7" ] ; then pip install https://github.com/django/django/archive/stable/1.7.x.zip#egg=django; fi
   - if [ $DJANGO = "1.8" ] ; then pip install https://github.com/django/django/archive/stable/1.8.x.zip#egg=django; fi
