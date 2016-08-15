@@ -83,6 +83,7 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 
 ## Changelog
+ * 1.0.0: Add support for django 1.8, 1.9, and 1.10. Drop support for python 2.6. Add support for python 3.5.  Update test suite to run with tox.
  * 0.2.6: Roundtrip original URL accessed through the oauth process so you can go to the URL you requested after the authorization process finishes.  Thanks @igorsobreira.
  * 0.2.5: Fix bug where failing ping was not invalidating session immediately, only on the second request.
  * 0.2.4: Redirect to the login if the grant is invalid
