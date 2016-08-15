@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect
 
 from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
+import oauthadmin.views
 
 
 def destroy_session(request):
@@ -28,7 +29,7 @@ def login(request):
     # this view can be called directly by django admin site from
     # any url, or can be accessed by the login url if the urls
     # from this app were included
-    if request.path == reverse('oauthadmin.views.login'):
+    if request.path == reverse(oauthadmin.views.login):
         # if this view is being accessed from login url look for 'next'
         # in query string to use as destination after the login is complete
         next = request.GET.get('next')
@@ -39,7 +40,7 @@ def login(request):
         # don't support it yet)
         next = request.get_full_path()
 
-    redirect_uri = request.build_absolute_uri(reverse('oauthadmin.views.callback'))
+    redirect_uri = request.build_absolute_uri(reverse(oauthadmin.views.callback))
     if next:
         redirect_uri += '?next='+next
 
@@ -57,7 +58,7 @@ def login(request):
 
 def callback(request):
     if 'oauth_state' not in request.session:
-        return HttpResponseRedirect(request.build_absolute_uri(reverse('oauthadmin.views.login')))
+        return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
     oauth = OAuth2Session(app_setting('CLIENT_ID'), state=request.session['oauth_state'])
     try:
         token = oauth.fetch_token(
@@ -66,7 +67,7 @@ def callback(request):
             authorization_response=app_setting('AUTH_URL') + "?" + request.GET.urlencode()
         )
     except (MismatchingStateError, InvalidGrantError):
-        return HttpResponseRedirect(request.build_absolute_uri(reverse('oauthadmin.views.login')))
+        return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
@@ -90,4 +91,4 @@ def logout(request):
 
 
 def logout_redirect(request):
-    return redirect(app_setting('BASE_URL') + 'logout?next=' + quote_plus(request.build_absolute_uri(reverse('oauthadmin.views.logout'))))
+    return redirect(app_setting('BASE_URL') + 'logout?next=' + quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout))))
