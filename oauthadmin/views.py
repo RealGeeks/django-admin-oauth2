@@ -1,7 +1,10 @@
 from time import time
+import base64
+import json
 
 from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
+from oauthlib.common import generate_token
 try:
     from urllib import quote_plus
 except ImportError:
@@ -41,13 +44,13 @@ def login(request):
         next = request.get_full_path()
 
     redirect_uri = request.build_absolute_uri(reverse(oauthadmin.views.callback))
-    if next:
-        redirect_uri += '?next='+next
-
+    state_token = generate_token()
+    state=base64.b64encode(json.dumps({"state": state_token, "next": next}).encode('utf-8'))
     oauth = OAuth2Session(
         client_id=app_setting('CLIENT_ID'),
         redirect_uri=redirect_uri,
         scope=["default"],
+        state=state,
     )
     authorization_url, state = oauth.authorization_url(app_setting('AUTH_URL'))
 
@@ -80,7 +83,9 @@ def callback(request):
     request.session['oauth_token'] = token
     request.session['user'] = user
 
-    next = request.GET.get('next', '/admin')
+    next = json.loads(base64.b64decode(request.session['oauth_state']).decode('utf-8'))['next']
+    if not next:
+        next = '/admin'
 
     return redirect(request.build_absolute_uri(next))
 
