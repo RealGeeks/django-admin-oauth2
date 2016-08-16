@@ -59,7 +59,12 @@ def login(request):
 def callback(request):
     if 'oauth_state' not in request.session:
         return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
-    oauth = OAuth2Session(app_setting('CLIENT_ID'), state=request.session['oauth_state'])
+    redirect_uri = request.build_absolute_uri(reverse(oauthadmin.views.callback))
+    oauth = OAuth2Session(
+        app_setting('CLIENT_ID'),
+        state=request.session['oauth_state'],
+        redirect_uri=redirect_uri,
+    )
     try:
         token = oauth.fetch_token(
             app_setting('TOKEN_URL'),
