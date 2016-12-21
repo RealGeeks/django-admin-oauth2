@@ -65,7 +65,7 @@ def callback(request):
     redirect_uri = request.build_absolute_uri(reverse(oauthadmin.views.callback))
     oauth = OAuth2Session(
         app_setting('CLIENT_ID'),
-        state=request.session['oauth_state'],
+        state=request.session['oauth_state'].decode('utf-8'),
         redirect_uri=redirect_uri,
     )
     try:
