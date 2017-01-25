@@ -164,7 +164,7 @@ def test_callback(import_by_path, app_setting, OAuth2Session, request_factory):
 
     resp = callback(request)
     assert resp.status_code == 302
-    assert resp['location'] == 'http://testserver/admin'
+    assert resp['location'] == 'http://testserver/app-setting'
     assert request.session.get('oauth_token') == 'token'
     assert request.session.get('user') == 'test-user'
 
