@@ -85,7 +85,7 @@ def callback(request):
 
     next = json.loads(base64.b64decode(request.session['oauth_state']).decode('utf-8'))['next']
     if not next:
-        next = '/admin'
+        next = app_setting('OAUTHADMIN_DEFAULT_NEXT_URL')
 
     return redirect(request.build_absolute_uri(next))
 
