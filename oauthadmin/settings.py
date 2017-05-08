@@ -4,7 +4,7 @@ defaults = {
     # default values for all django-oauth2-admin settings
     "GET_USER": 'oauthadmin.stubs.get_user',
     "PING_INTERVAL": 300,
-    "OAUTHADMIN_DEFAULT_NEXT_URL": "/admin/",
+    "DEFAULT_NEXT_URL": "/admin/",
     "SCOPE": ["default"],
 }
 
