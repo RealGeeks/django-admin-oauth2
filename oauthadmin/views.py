@@ -79,9 +79,10 @@ def callback(request):
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
-    request.session['last_verified_at'] = int(time())
-    request.session['oauth_token'] = token
-    request.session['user'] = user
+    if user:
+        request.session['last_verified_at'] = int(time())
+        request.session['oauth_token'] = token
+        request.session['user'] = user
 
     next = json.loads(base64.b64decode(request.session['oauth_state']).decode('utf-8'))['next']
     if not next:
