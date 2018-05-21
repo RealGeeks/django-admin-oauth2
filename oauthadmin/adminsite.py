@@ -1,6 +1,4 @@
 from django.contrib.admin.sites import AdminSite
-# from django.shortcuts import redirect
-# from django.core.urlresolvers import reverse
 
 from oauthadmin.views import login, logout_redirect
 

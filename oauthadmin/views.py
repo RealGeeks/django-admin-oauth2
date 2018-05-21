@@ -11,12 +11,17 @@ except ImportError:
     from urllib.parse import quote_plus
 
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse, NoReverseMatch
 from django.http import HttpResponseRedirect
 
 from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
 import oauthadmin.views
+
+try:
+    from django.urls import reverse, NoReverseMatch
+except ImportError:
+    from django.core.urlresolvers import reverse, NoReverseMatch
+
 
 
 def destroy_session(request):

@@ -84,6 +84,7 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 
 ## Changelog
+ * 1.1.2: Add support for django 2
  * 1.1.1: Fix a bug where the new setting wasn't getting read
  * 1.1.0: Add new setting: OAUTHADMIN_DEFAULT_NEXT_URL
  * 1.0.2: Support python3

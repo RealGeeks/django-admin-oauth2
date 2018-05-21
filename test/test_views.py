@@ -5,8 +5,12 @@ import json
 from oauthadmin.views import destroy_session, login, callback, logout
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
 from django.test.client import RequestFactory
-from django.core.urlresolvers import reverse
 import oauthadmin.views
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 SESSION_VARIABLES = ['oauth_state', 'oauth_token', 'uid', 'user']
