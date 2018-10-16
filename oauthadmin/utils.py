@@ -1,6 +1,10 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from importlib import import_module
+
+from oauthadmin.settings import app_setting
+
 
 # Note: This is a copy-paste from django 1.6 for backwards-compat reasons
 
@@ -26,13 +30,25 @@ def import_by_path(dotted_path, error_prefix=''):
     return attr
 
 
+def apply_groups(user):
+    for group_name in app_setting('GROUPS'):
+        try:
+            group = Group.objects.get(name=group_name)
+            group.user_set.add(user)
+        except Group.DoesNotExist:
+            pass
+
+
 def get_user(token):
+    user_name = token['user_name']
     try:
-        user = User.objects.get(username=token['email'])
+        user = User.objects.get(username=user_name)
     except User.DoesNotExist:
-        user = User(username=token['email'])
+        user = User(username=user_name)
         user.is_superuser = False
         user.is_staff = True
-        user.email = token['email']
+        user.email = user_name
+        user.first_name = token['full_name']
         user.save()
+        apply_groups(user)
     return user

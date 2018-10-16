@@ -6,6 +6,7 @@ defaults = {
     "PING_INTERVAL": 300,
     "DEFAULT_NEXT_URL": "/admin/",
     "SCOPE": [],
+    "GROUPS": [],
 }
 
 global_prefix = 'OAUTHADMIN_'
