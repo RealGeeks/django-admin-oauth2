@@ -5,7 +5,7 @@ defaults = {
     "GET_USER": 'oauthadmin.utils.get_user',
     "PING_INTERVAL": 300,
     "DEFAULT_NEXT_URL": "/admin/",
-    "SCOPE": [],
+    "SCOPE": ['default'],
     "GROUPS": [],
 }
 
