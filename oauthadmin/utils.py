@@ -1,7 +1,9 @@
 from django.core.exceptions import ImproperlyConfigured
+from django.contrib.auth.models import User
 from importlib import import_module
 
 # Note: This is a copy-paste from django 1.6 for backwards-compat reasons
+
 
 def import_by_path(dotted_path, error_prefix=''):
     """
@@ -22,3 +24,15 @@ def import_by_path(dotted_path, error_prefix=''):
         raise ImproperlyConfigured('%sModule "%s" does not define a "%s" attribute/class' % (
             error_prefix, module_path, class_name))
     return attr
+
+
+def get_user(token):
+    try:
+        user = User.objects.get(username=token['email'])
+    except User.DoesNotExist:
+        user = User(username=token['email'])
+        user.is_superuser = False
+        user.is_staff = True
+        user.email = token['email']
+        user.save()
+    return user

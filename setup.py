@@ -7,20 +7,19 @@ try:
 except IOError:
     README = '<no description>'
 
-install_requires = ['oauthlib','requests_oauthlib']
+install_requires = ['oauthlib', 'requests_oauthlib']
 
 try:
     import importlib
 except ImportError:
     install_requires.append('importlib')
 
-
 setup(
     name='django-admin-oauth2',
-    version='1.1.2',
+    version='1.2.0',
     description='A django app that replaces the django admin authentication mechanism by deferring to an oauth2 provider',
     long_description=README,
-    url='https://github.com/RealGeeks/django-admin-oauth2',
+    url='https://github.com/bastionhost/django-admin-oauth2',
     author='Real Geeks LLC',
     author_email='andrew@realgeeks.com',
     classifiers=[

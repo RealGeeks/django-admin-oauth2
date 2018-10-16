@@ -3,7 +3,7 @@
 A django app that replaces the django admin authentication mechanism by
 deferring to an oauth2 provider.
 
-[![Build Status](https://travis-ci.org/RealGeeks/django-admin-oauth2.png?branch=master)](https://travis-ci.org/RealGeeks/django-admin-oauth2)
+[![Build Status](https://travis-ci.org/bastionhost/django-admin-oauth2.png?branch=master)](https://travis-ci.org/bastionhost/django-admin-oauth2)
 
 # Support
 
@@ -11,7 +11,7 @@ django-admin-oauth2 should support Python 2.7, pypy, and Django versions 1.6 thr
 
 ## Installation
 
-Step 1: `pip install django-admin-oauth2` and include it in your project's requirements
+Step 1: `pip install git+ssh://git@github.com/bastionhost/django-admin-oauth2.git` and include it in your project's requirements
 
 Step 2:  Include the django-admin-oauth2 urlconf in your project's urls.py:
 
@@ -62,6 +62,7 @@ Step 6: Set up all the correct options (see below for available options)
  * OAUTHADMIN_PING_INTERVAL (optional, defaults to 300): Minimum number of seconds between ping requests
  * OAUTHADMIN_PING: (optional, defaults to None) This optional function takes an oauth token and returns True if it's still valid and False if it's no longer valid (if they have logged out of the oauth server)
  * OAUTHADMIN_DEFAULT_NEXT_URL: (optional, defaults to /admin). This optional value is the default page that a successful oauth login process will land you on.
+ * OAUTHADMIN_SCOPE:  (optional, defaults to \[\]) A list of the scopes you want to ask for.
 
 ## Testing
 
