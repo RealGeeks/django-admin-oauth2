@@ -11,6 +11,10 @@ django-admin-oauth2 should support Python 2.7, pypy, and Django versions 1.6 thr
 
 ## Installation
 
+Integrating Demo: https://github.com/huifenqi/dbhub/pull/1/files
+
+![workflow](./workflow.png)
+
 Step 1: `pip install git+ssh://git@github.com/bastionhost/django-admin-oauth2.git` and include it in your project's requirements
 
 Step 2:  Include the django-admin-oauth2 urlconf in your project's urls.py:

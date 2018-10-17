@@ -98,7 +98,7 @@ def callback(request):
 def logout(request):
     if 'oauth_token' in request.session:
         oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
-        oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
+        oauth.get(app_setting('BASE_URL') + 'destroy_tokens/')
 
         destroy_session(request)
 
@@ -106,4 +106,4 @@ def logout(request):
 
 
 def logout_redirect(request):
-    return redirect(app_setting('BASE_URL') + 'logout?next=' + quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout))))
+    return redirect(app_setting('BASE_URL') + 'logout/?next=' + quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout))))
