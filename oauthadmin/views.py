@@ -84,8 +84,9 @@ def callback(request):
     except (MismatchingStateError, InvalidGrantError):
         return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
 
+    user_getter = import_by_path(app_setting('GET_USER'))
     try:
-        user = import_by_path(app_setting('GET_USER'))(token)
+        user = user_getter(token)
     except UserNotAllowed:
         return HttpResponseForbidden()
 

@@ -1,5 +1,3 @@
-
-
 class OAuthAdminException(Exception)
     pass
 
