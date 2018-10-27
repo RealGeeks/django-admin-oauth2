@@ -15,7 +15,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 import oauthadmin.views
 
-from oauthadmin.errors import UserNotAllowed
+from oauthadmin.errors import UnauthorizedUser
 from oauthadmin.settings import app_setting
 from oauthadmin.utils import import_by_path
 
