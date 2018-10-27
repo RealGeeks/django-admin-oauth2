@@ -87,10 +87,10 @@ def callback(request):
     user_getter = import_by_path(app_setting('GET_USER'))
     try:
         user = user_getter(token)
-    except UnauthorizedUser:
+    except UnauthorizedUser as e:
         unauthorized_user_handler = app_setting('UNAUTHORIZED_USER_HANDLER')
         if unauthorized_user_handler:
-            return unauthorized_user_handler(request, token)
+            return unauthorized_user_handler(request, token, e)
         return HttpResponse(status=401)
 
     request.session['last_verified_at'] = int(time())

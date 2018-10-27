@@ -54,8 +54,8 @@ Step 6: Set up all the correct options (see below for available options)
  * OAUTHADMIN_GET_USER: This is function that is given the oauth token and returns
    a django.auth.models.User model corresponding to the currently logged-in user.
    You can set permissions on this user object and stuff.
- * OAUTHADMIN_UNAUTHORIZED_USER_HANDLER: Callable that receives request object and OAuth token
-   and should return proper response object for unauthorized users.
+ * OAUTHADMIN_UNAUTHORIZED_USER_HANDLER: Callable that receives request object, OAuth token
+   and exception. This callable should return proper response object for unauthorized users.
  * OAUTHADMIN_CLIENT_ID: Your oAuth client ID
  * OAUTHADMIN_CLIENT_SECRET: oAuth client secret
  * OAUTHADMIN_BASE_URL: The landing point for all oAuth related queries.
