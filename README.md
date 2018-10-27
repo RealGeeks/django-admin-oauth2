@@ -62,6 +62,7 @@ Step 6: Set up all the correct options (see below for available options)
  * OAUTHADMIN_PING_INTERVAL (optional, defaults to 300): Minimum number of seconds between ping requests
  * OAUTHADMIN_PING: (optional, defaults to None) This optional function takes an oauth token and returns True if it's still valid and False if it's no longer valid (if they have logged out of the oauth server)
  * OAUTHADMIN_DEFAULT_NEXT_URL: (optional, defaults to /admin). This optional value is the default page that a successful oauth login process will land you on.
+ * OAUTHADMIN_SCOPE: (optional, defaults to ['default']). This is a list of authorization scopes.
 
 ## Testing
 

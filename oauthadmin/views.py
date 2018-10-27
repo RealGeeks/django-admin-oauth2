@@ -54,7 +54,7 @@ def login(request):
     oauth = OAuth2Session(
         client_id=app_setting('CLIENT_ID'),
         redirect_uri=redirect_uri,
-        scope=["default"],
+        scope=app_setting('SCOPE'),
         state=state,
     )
     authorization_url, state = oauth.authorization_url(app_setting('AUTH_URL'))
