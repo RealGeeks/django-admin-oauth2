@@ -88,6 +88,9 @@ def callback(request):
     try:
         user = user_getter(token)
     except UserNotAllowed:
+        forbidden_handler = app_setting('FORBIDDEN_HANDLER')
+        if forbidden_handler:
+            return forbidden_handler(request, token)
         return HttpResponseForbidden()
 
     request.session['last_verified_at'] = int(time())
