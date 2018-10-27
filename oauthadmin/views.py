@@ -11,7 +11,7 @@ except ImportError:
     from urllib.parse import quote_plus
 
 from django.shortcuts import redirect
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect
 
 import oauthadmin.views
 
@@ -87,11 +87,11 @@ def callback(request):
     user_getter = import_by_path(app_setting('GET_USER'))
     try:
         user = user_getter(token)
-    except UserNotAllowed:
-        forbidden_handler = app_setting('FORBIDDEN_HANDLER')
-        if forbidden_handler:
-            return forbidden_handler(request, token)
-        return HttpResponseForbidden()
+    except UnauthorizedUser:
+        unauthorized_user_handler = app_setting('UNAUTHORIZED_USER_HANDLER')
+        if unauthorized_user_handler:
+            return unauthorized_user_handler(request, token)
+        return HttpResponse(status=401)
 
     request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token
