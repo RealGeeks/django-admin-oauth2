@@ -15,7 +15,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 import oauthadmin.views
 
-from oauthadmin.errors import UnauthorizedUser
+from oauthadmin.errors import GetUserException
 from oauthadmin.settings import app_setting
 from oauthadmin.utils import import_by_path
 
@@ -87,11 +87,11 @@ def callback(request):
     user_getter = import_by_path(app_setting('GET_USER'))
     try:
         user = user_getter(token)
-    except UnauthorizedUser as e:
-        unauthorized_user_handler = app_setting('UNAUTHORIZED_USER_HANDLER')
-        if unauthorized_user_handler:
-            return unauthorized_user_handler(request, token, e)
-        return HttpResponse(status=401)
+    except GetUserException as e:
+        get_user_exception_handler = app_setting('GET_USER_EXCEPTION_HANDLER')
+        if get_user_exception_handler:
+            return get_user_exception_handler(request, token, e)
+        raise
 
     request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token

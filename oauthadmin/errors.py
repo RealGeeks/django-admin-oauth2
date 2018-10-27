@@ -2,5 +2,5 @@ class OAuthAdminException(Exception):
     pass
 
 
-class UnauthorizedUser(OAuthAdminException):
+class GetUserException(OAuthAdminException):
     pass
