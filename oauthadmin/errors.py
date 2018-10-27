@@ -1,4 +1,4 @@
-class OAuthAdminException(Exception)
+class OAuthAdminException(Exception):
     pass
 
 
