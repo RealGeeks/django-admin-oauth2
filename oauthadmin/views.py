@@ -88,8 +88,9 @@ def callback(request):
     try:
         user = user_getter(token)
     except GetUserException as e:
-        get_user_exception_handler = import_by_path(app_setting('GET_USER_EXCEPTION_HANDLER'))
-        if get_user_exception_handler:
+        get_user_exception_handler_module = app_setting('GET_USER_EXCEPTION_HANDLER')
+        if get_user_exception_handler_module:
+            get_user_exception_handler = import_by_path(get_user_exception_handler_module)
             return get_user_exception_handler(request, token, e)
         raise
 
