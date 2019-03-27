@@ -1,6 +1,8 @@
 from time import time
 import base64
 import json
+from django.http import QueryDict
+
 
 from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
@@ -40,7 +42,7 @@ def login(request):
     if request.path == reverse(oauthadmin.views.login):
         # if this view is being accessed from login url look for 'next'
         # in query string to use as destination after the login is complete
-        next = request.GET.get('next')
+        next = request.GET.get('next') or app_setting('DEFAULT_NEXT_URL')
     else:
         # otherwise the django admin site called this view from another view.
         # Django admin doesn't redirect to login url if login is required, it
@@ -54,13 +56,12 @@ def login(request):
     oauth = OAuth2Session(
         client_id=app_setting('CLIENT_ID'),
         redirect_uri=redirect_uri,
-        scope=["default"],
+        scope=["openid"],
         state=state,
     )
     authorization_url, state = oauth.authorization_url(app_setting('AUTH_URL'))
 
     request.session['oauth_state'] = state
-
     return redirect(authorization_url)
 
 
@@ -76,6 +77,7 @@ def callback(request):
     try:
         token = oauth.fetch_token(
             app_setting('TOKEN_URL'),
+            include_client_id=True,
             client_secret=app_setting('CLIENT_SECRET'),
             authorization_response=app_setting('AUTH_URL') + "?" + request.GET.urlencode()
         )
@@ -83,6 +85,7 @@ def callback(request):
         return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
 
     user = import_by_path(app_setting('GET_USER'))(token)
+
 
     request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token
@@ -92,18 +95,31 @@ def callback(request):
     if not next:
         next = app_setting('DEFAULT_NEXT_URL')
 
+
     return redirect(request.build_absolute_uri(next))
 
 
 def logout(request):
     if 'oauth_token' in request.session:
-        oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
-        oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
+#        oauth = OAuth2Session(app_setting('CLIENT_ID'), token=request.session['oauth_token'])
+#        oauth.get(app_setting('BASE_URL') + 'destroy_tokens')
 
         destroy_session(request)
 
-    return redirect(request.build_absolute_uri('/'))
+    return redirect(request.build_absolute_uri('/admin'))
 
 
 def logout_redirect(request):
-    return redirect(app_setting('BASE_URL') + 'logout?next=' + quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout))))
+    q = QueryDict(mutable=True)
+    q['client_id'] = app_setting('CLIENT_ID')
+    q['logout_uri'] = request.build_absolute_uri(reverse(oauthadmin.views.logout))
+    # q['redirect_uri'] = quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout)))
+    # q['response_type'] = 'code'
+    # state_token = generate_token()
+    # state=base64.b64encode(json.dumps({"state": state_token}).encode('utf-8'))
+    # q['state'] = state
+    q['scope'] = 'openid'
+
+
+g
+    return redirect(app_setting('BASE_URL') + 'logout?' + q.urlencode())
