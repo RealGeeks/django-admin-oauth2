@@ -120,6 +120,4 @@ def logout_redirect(request):
     # q['state'] = state
     q['scope'] = 'openid'
 
-
-g
     return redirect(app_setting('BASE_URL') + 'logout?' + q.urlencode())
