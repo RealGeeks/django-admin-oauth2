@@ -113,8 +113,8 @@ def logout_redirect(request):
     q = QueryDict(mutable=True)
     q['client_id'] = app_setting('CLIENT_ID')
     q['logout_uri'] = request.build_absolute_uri(reverse(oauthadmin.views.logout))
-    # q['redirect_uri'] = quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout)))
-    # q['response_type'] = 'code'
+    q['redirect_uri'] = quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout)))
+    q['response_type'] = 'code'
     # state_token = generate_token()
     # state=base64.b64encode(json.dumps({"state": state_token}).encode('utf-8'))
     # q['state'] = state
