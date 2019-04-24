@@ -86,15 +86,18 @@ def callback(request):
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
+    if user:
 
-    request.session['last_verified_at'] = int(time())
-    request.session['oauth_token'] = token
-    request.session['user'] = user
+        request.session['last_verified_at'] = int(time())
+        request.session['oauth_token'] = token
+        request.session['user'] = user
 
-    next = json.loads(base64.b64decode(request.session['oauth_state']).decode('utf-8'))['next']
-    if not next:
-        next = app_setting('DEFAULT_NEXT_URL')
+        next = json.loads(base64.b64decode(request.session['oauth_state']).decode('utf-8'))['next']
+        if not next:
+            next = app_setting('DEFAULT_NEXT_URL')
 
+    else:
+        next = app_setting('OAUTHADMIN_UNAUTH_URL')
 
     return redirect(request.build_absolute_uri(next))
 
