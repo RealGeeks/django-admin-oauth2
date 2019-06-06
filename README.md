@@ -85,6 +85,7 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 
 ## Changelog
+ * 1.2.0: Allow overriding oauth scope with new parameter, OAUTHADMIN_SCOP
  * 1.1.3: Bugfix in adminsite (tabs vs spaces)
  * 1.1.2: Add support for django 2
  * 1.1.1: Fix a bug where the new setting wasn't getting read
