@@ -11,11 +11,13 @@ except ImportError:
     from urllib.parse import quote_plus
 
 from django.shortcuts import redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
-from oauthadmin.utils import import_by_path
-from oauthadmin.settings import app_setting
 import oauthadmin.views
+
+from oauthadmin.errors import GetUserException
+from oauthadmin.settings import app_setting
+from oauthadmin.utils import import_by_path
 
 try:
     from django.urls import reverse, NoReverseMatch
@@ -82,7 +84,15 @@ def callback(request):
     except (MismatchingStateError, InvalidGrantError):
         return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
 
-    user = import_by_path(app_setting('GET_USER'))(token)
+    user_getter = import_by_path(app_setting('GET_USER'))
+    try:
+        user = user_getter(token)
+    except GetUserException as e:
+        get_user_exception_handler_module = app_setting('GET_USER_EXCEPTION_HANDLER')
+        if get_user_exception_handler_module:
+            get_user_exception_handler = import_by_path(get_user_exception_handler_module)
+            return get_user_exception_handler(request, token, e)
+        raise
 
     request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token
