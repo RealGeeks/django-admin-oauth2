@@ -1,4 +1,4 @@
-Django==1.10.0
+Django==1.11.23
 mock==2.0.0
 oauthlib==1.1.2
 pytest==2.9.2
