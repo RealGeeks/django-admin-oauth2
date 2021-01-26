@@ -58,12 +58,12 @@ Step 6: Set up all the correct options (see below for available options)
  * OAUTHADMIN_CLIENT_ID: Your oAuth client ID
  * OAUTHADMIN_CLIENT_SECRET: oAuth client secret
  * OAUTHADMIN_BASE_URL: The landing point for all oAuth related queries.
- * OATHADMIN_AUTH_URL: oAuth provider URL
+ * OAUTHADMIN_AUTH_URL: oAuth provider URL
  * OAUTHADMIN_TOKEN_URL: oAuth bearer token provider URL
  * OAUTHADMIN_PING_INTERVAL (optional, defaults to 300): Minimum number of seconds between ping requests
  * OAUTHADMIN_PING: (optional, defaults to None) This optional function takes an oauth token and returns True if it's still valid and False if it's no longer valid (if they have logged out of the oauth server)
  * OAUTHADMIN_DEFAULT_NEXT_URL: (optional, defaults to /admin). This optional value is the default page that a successful oauth login process will land you on.
- * OAUTHADMIN_SCOPE: (optional, defaults to `['default']`) A list of the scopes you want to ask for.
+ * OAUTHADMIN_SCOPE: (optional, defaults to ['default']). This is a list of authorization scopes.
 
 ## Settings for the OAuth2 <--> Django user mapping
 
@@ -93,8 +93,10 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 
 ## Changelog
- * 1.2.1: Support init groups
- * 1.2.0: Support default get_user
+ * 1.2.2: Support init groups
+ * 1.2.1: Support default get_user
+ * 1.2.0: Allow overriding oauth scope with new parameter, OAUTHADMIN_SCOP
+ * 1.1.3: Bugfix in adminsite (tabs vs spaces)
  * 1.1.2: Add support for django 2
  * 1.1.1: Fix a bug where the new setting wasn't getting read
  * 1.1.0: Add new setting: OAUTHADMIN_DEFAULT_NEXT_URL
