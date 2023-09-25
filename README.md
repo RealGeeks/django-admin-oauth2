@@ -16,7 +16,7 @@ Step 1: `pip install django-admin-oauth2` and include it in your project's requi
 Step 2:  Include the django-admin-oauth2 urlconf in your project's urls.py:
 
 ```python
-url(r'/admin/oauth/', include('oauthadmin.urls'))
+re_path(r'/admin/oauth/', include('oauthadmin.urls'))
 ```
 
 Step 3: Include oauthadmin in your INSTALLED_APPS:
@@ -85,6 +85,7 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 
 ## Changelog
+ * 1.2.1: Add support for django 4
  * 1.2.0: Allow overriding oauth scope with new parameter, OAUTHADMIN_SCOP
  * 1.1.3: Bugfix in adminsite (tabs vs spaces)
  * 1.1.2: Add support for django 2
