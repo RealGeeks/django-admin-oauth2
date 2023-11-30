@@ -3,7 +3,7 @@
 A django app that replaces the django admin authentication mechanism by
 deferring to an oauth2 provider.
 
-[![Build Status](https://travis-ci.org/RealGeeks/django-admin-oauth2.png?branch=master)](https://travis-ci.org/RealGeeks/django-admin-oauth2)
+[![Build Status](https://travis-ci.org/bastionhost/django-admin-oauth2.png?branch=master)](https://travis-ci.org/bastionhost/django-admin-oauth2)
 
 # Support
 
@@ -11,7 +11,11 @@ django-admin-oauth2 should support Python 2.7, pypy, and Django versions 1.6 thr
 
 ## Installation
 
-Step 1: `pip install django-admin-oauth2` and include it in your project's requirements
+Integrating Demo: https://github.com/huifenqi/dbhub/pull/1/files
+
+![workflow](./workflow.png)
+
+Step 1: `pip install git+ssh://git@github.com/bastionhost/django-admin-oauth2.git` and include it in your project's requirements
 
 Step 2:  Include the django-admin-oauth2 urlconf in your project's urls.py:
 
@@ -51,9 +55,6 @@ Step 6: Set up all the correct options (see below for available options)
 
 ## Settings
 
- * OAUTHADMIN_GET_USER: This is function that is given the oauth token and returns
-   a django.auth.models.User model corresponding to the currently logged-in user.
-   You can set permissions on this user object and stuff.
  * OAUTHADMIN_CLIENT_ID: Your oAuth client ID
  * OAUTHADMIN_CLIENT_SECRET: oAuth client secret
  * OAUTHADMIN_BASE_URL: The landing point for all oAuth related queries.
@@ -63,6 +64,13 @@ Step 6: Set up all the correct options (see below for available options)
  * OAUTHADMIN_PING: (optional, defaults to None) This optional function takes an oauth token and returns True if it's still valid and False if it's no longer valid (if they have logged out of the oauth server)
  * OAUTHADMIN_DEFAULT_NEXT_URL: (optional, defaults to /admin). This optional value is the default page that a successful oauth login process will land you on.
  * OAUTHADMIN_SCOPE: (optional, defaults to ['default']). This is a list of authorization scopes.
+
+## Settings for the OAuth2 <--> Django user mapping
+
+ * OAUTHADMIN_GET_USER: (optional, defaults to `oauthadmin.utils.get_user`)This is function that is given the oauth token and returns
+   a django.auth.models.User model corresponding to the currently logged-in user.
+   You can set permissions on this user object and stuff.
+ * OAUTHADMIN_GROUPS: (optional, defaults to `[]`) A list of the groups you want to apply for.
 
 ## Testing
 
@@ -85,6 +93,8 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 
 ## Changelog
+ * 1.2.2: Support init groups
+ * 1.2.1: Support default get_user
  * 1.2.0: Allow overriding oauth scope with new parameter, OAUTHADMIN_SCOP
  * 1.1.3: Bugfix in adminsite (tabs vs spaces)
  * 1.1.2: Add support for django 2
