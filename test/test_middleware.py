@@ -7,7 +7,7 @@ from oauthadmin.middleware import OauthAdminSessionMiddleware
 def setup_module(mod):
    global mw
    global request
-   mw = OauthAdminSessionMiddleware()
+   mw = OauthAdminSessionMiddleware(Mock())
    request = Mock()
    request.session = {}
 
