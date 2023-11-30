@@ -1,7 +1,9 @@
 Django==1.10.0
+freezegun==0.3.7
 mock==2.0.0
 oauthlib==1.1.2
 pytest==7.4.3
-requests==2.11.0
 requests-oauthlib==0.6.2
-freezegun==0.3.7
+requests==2.11.0
+tox-pyenv==1.1.0
+tox==3.28.0
