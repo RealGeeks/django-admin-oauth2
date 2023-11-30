@@ -5,5 +5,5 @@ oauthlib==1.1.2
 pytest==7.4.3
 requests-oauthlib==0.6.2
 requests==2.11.0
-tox-pyenv==1.1.0
-tox==3.28.0
+tox==4.11.4
+virtualenv-pyenv
