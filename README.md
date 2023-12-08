@@ -82,8 +82,7 @@ pip install -r requirements-test.txt
 and then run the tests with the provided script:
 
 ```
-./runtests.sh
-
+tox
 ```
 
 ## Notes
