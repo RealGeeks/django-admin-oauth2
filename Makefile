@@ -1,6 +1,7 @@
 .PHONY: test
 
 CLI=docker-compose run --rm pkg
+TOX=$(CLI) tox
 
 help:	# list available targets with descriptions if they exist
 	@sed -n 's/\(^[^_#[:space:].\%*][[:alnum:]]*:\)\([^#]*\)\(#.*$$\)\{0,1\}/\1 \3/ip' Makefile | column -t -s '#' | sort
@@ -17,10 +18,10 @@ bash:	# start a bash shell in the container
 	$(CLI) /bin/bash
 
 test:	# run tests in the container
-	$(CLI) bash -c "tox"
+	$(TOX)
 
 test-watch:	# continuously run tests in the container
-	$(CLI) /bin/bash -c '$(PYTEST); while inotifywait -qqre modify .; do $(PYTEST); done'
+	$(CLI) /bin/bash -c '$(PYTEST); while inotifywait -qqre modify .; do $(TOX); done'
 
 format:	# format python project code
 	$(CLI) black .
