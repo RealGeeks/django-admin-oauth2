@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.10-slim-bullseye
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
@@ -26,6 +26,11 @@ ENV PATH="$PATH:/root/.asdf/shims"
 
 WORKDIR /opt/app
 
+COPY .tool-versions .
+
+RUN asdf plugin-add python
+RUN asdf install python
+
 ARG REQUIREMENTS_FILE=requirements-test.txt
 
 COPY $REQUIREMENTS_FILE .
@@ -33,9 +38,6 @@ RUN pip install pip-tools==7.3.0 && \
   pip install -r $REQUIREMENTS_FILE
 
 COPY . .
-
-RUN asdf plugin-add python
-RUN asdf install python
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
