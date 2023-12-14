@@ -6,4 +6,4 @@ pytest==7.4.3
 requests-oauthlib==0.6.2
 requests==2.11.0
 tox==4.11.4
-virtualenv-pyenv
+virtualenv-asdf

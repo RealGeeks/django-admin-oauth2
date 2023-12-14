@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  pkg:
+    build: .
+    environment:
+      - DJANGO_SETTINGS_MODULE=settings
+    volumes:
+      - .:/opt/app
