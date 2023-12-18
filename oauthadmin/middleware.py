@@ -1,3 +1,4 @@
+from django.core import serializers
 from time import time
 from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
@@ -29,8 +30,8 @@ def _verify_ping_interval(request, ping_interval, ping_func):
 class OauthAdminSessionMiddleware(BaseClass):
     def process_request(self, request):
         if hasattr(request, 'session') and 'user' in request.session:
-            request.user = request.session['user']
-            request._cached_user = request.session['user']
+            request.user = list(serializers.deserialize("json", request.session['user']))[0].object
+            request._cached_user = list(serializers.deserialize("json", request.session['user']))[0].object
 
             if app_setting('PING_INTERVAL') and app_setting('PING'):
                 _verify_ping_interval(

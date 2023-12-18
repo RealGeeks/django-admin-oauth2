@@ -5,6 +5,7 @@ import json
 from oauthadmin.views import destroy_session, login, callback, logout
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, InvalidGrantError
 from django.test.client import RequestFactory
+from django.contrib.auth.models import User
 import oauthadmin.views
 
 try:
@@ -60,7 +61,7 @@ def test_login(app_setting, OAuth2Session, request_factory):
     resp = login(request)
     assert resp.status_code == 302
     assert resp['location'] == 'https://foo'
-    assert request.session.get('oauth_state') == _state('state-variable')
+    assert request.session.get('oauth_state') == _state('state-variable').decode('utf-8')
 
 @mock.patch('oauthadmin.views.OAuth2Session')
 def test_login_redirect_uri(OAuth2Session, request_factory):
@@ -154,8 +155,9 @@ def test_callback_with_invalid_grant(import_by_path, app_setting, OAuth2Session,
 
 @mock.patch('oauthadmin.views.OAuth2Session')
 @mock.patch('oauthadmin.views.app_setting')
+@mock.patch('oauthadmin.views.serializers.serialize')
 @mock.patch('oauthadmin.views.import_by_path')
-def test_callback(import_by_path, app_setting, OAuth2Session, request_factory):
+def test_callback(import_by_path, mock_serialized_json_user, app_setting, OAuth2Session, request_factory):
     request = request_factory.get(reverse(oauthadmin.views.callback))
     request.session = {'oauth_state': _state('state-variable')}
     OAuth2Session.return_value = mock.Mock(
@@ -163,19 +165,24 @@ def test_callback(import_by_path, app_setting, OAuth2Session, request_factory):
     )
     app_setting.return_value = 'app-setting'
     ibp = mock.Mock()
-    ibp.return_value = 'test-user'
+    ibp.return_value = User(id=1)
     import_by_path.return_value = ibp
+
+    serialized_user = '[{"model": "auth.user", "pk": 1, "fields": {}}]'
+    mock_serialized_json_user.return_value = serialized_user
 
     resp = callback(request)
     assert resp.status_code == 302
     assert resp['location'] == 'http://testserver/callback/app-setting'
     assert request.session.get('oauth_token') == 'token'
-    assert request.session.get('user') == 'test-user'
+    mock_serialized_json_user.assert_called_once_with("json", [User(id=1)])
+    assert request.session.get('user') == serialized_user
 
 @mock.patch('oauthadmin.views.OAuth2Session')
 @mock.patch('oauthadmin.views.app_setting')
+@mock.patch('oauthadmin.views.serializers.serialize')
 @mock.patch('oauthadmin.views.import_by_path')
-def test_callback_redirect_to_next(import_by_path, app_setting, OAuth2Session, request_factory):
+def test_callback_redirect_to_next(import_by_path, mock_serialized_json_user, app_setting, OAuth2Session, request_factory):
     request = request_factory.get(reverse(oauthadmin.views.callback))
     request.session = {'oauth_state': _state('state-variable','/admin/content/')}
     OAuth2Session.return_value = mock.Mock(
@@ -183,10 +190,17 @@ def test_callback_redirect_to_next(import_by_path, app_setting, OAuth2Session, r
     )
     app_setting.return_value = 'app-setting'
     ibp = mock.Mock()
-    ibp.return_value = 'test-user'
+    ibp.return_value = User(id=1)
     import_by_path.return_value = ibp
 
+    serialized_user = '[{"model": "auth.user", "pk": 1, "fields": {}}]'
+    mock_serialized_json_user.return_value = serialized_user
+
     resp = callback(request)
+    
+    mock_serialized_json_user.assert_called_once_with("json", [User(id=1)])
+    assert request.session.get('user') == serialized_user
+
     assert resp.status_code == 302
     assert resp['location'] == 'http://testserver/admin/content/'
 
