@@ -12,6 +12,7 @@ except ImportError:
 
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
+from django.core import serializers
 
 from oauthadmin.utils import import_by_path
 from oauthadmin.settings import app_setting
@@ -59,7 +60,7 @@ def login(request):
     )
     authorization_url, state = oauth.authorization_url(app_setting('AUTH_URL'))
 
-    request.session['oauth_state'] = state
+    request.session['oauth_state'] = state.decode('utf-8')
 
     return redirect(authorization_url)
 
@@ -70,7 +71,7 @@ def callback(request):
     redirect_uri = request.build_absolute_uri(reverse(oauthadmin.views.callback))
     oauth = OAuth2Session(
         app_setting('CLIENT_ID'),
-        state=request.session['oauth_state'].decode('utf-8'),
+        state=request.session['oauth_state'], # decoded string
         redirect_uri=redirect_uri,
     )
     try:
@@ -83,10 +84,11 @@ def callback(request):
         return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
 
     user = import_by_path(app_setting('GET_USER'))(token)
+    serialized_user = serializers.serialize("json", [user])
 
     request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token
-    request.session['user'] = user
+    request.session['user'] = serialized_user
 
     next = json.loads(base64.b64decode(request.session['oauth_state']).decode('utf-8'))['next']
     if not next:

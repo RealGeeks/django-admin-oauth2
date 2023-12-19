@@ -7,7 +7,7 @@ deferring to an oauth2 provider.
 
 # Support
 
-django-admin-oauth2 should support Python 2.7, pypy, and Django versions 1.6 through 1.10
+django-admin-oauth2 should support Python 2.7 & Python 3.6 to 3.11, pypy, and Django versions 1.6 through 4
 
 ## Installation
 
@@ -45,16 +45,7 @@ MIDDLEWARE_CLASSES = (
 
 _make sure that this comes AFTER 'django.contrib.sessions.middleware.SessionMiddleware'_
 
-Step 5: If you are on Django 1.5 or above, you'll need to set your session serializer
-to "django.contrib.sessions.serializers.PickleSerializer" since we are storing the
-pickled user object in the session.
-
-```python
-SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
-
-```
-
-Step 6: Set up all the correct options (see below for available options)
+Step 5: Set up all the correct options (see below for available options)
 
 ## Settings
 
@@ -73,16 +64,10 @@ Step 6: Set up all the correct options (see below for available options)
 
 ## Testing
 
-If you want to test this app, install the requirements needed for testing:
+If you want to test this app, please run the following `Makefile` command:
 
 ```
-pip install -r requirements-test.txt
-```
-
-and then run the tests with the provided script:
-
-```
-tox
+make test
 ```
 
 ## Notes
@@ -91,6 +76,7 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 ## Changelog
 
+- 1.3.0: Add support for `JSONSerializer`
 - 1.2.1: Add support for django 4, retain backwards compat with Django 1.x
 - 1.2.0: Allow overriding oauth scope with new parameter, OAUTHADMIN_SCOP
 - 1.1.3: Bugfix in adminsite (tabs vs spaces)
