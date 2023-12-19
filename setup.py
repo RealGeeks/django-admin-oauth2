@@ -17,9 +17,10 @@ except ImportError:
 
 setup(
     name='django-admin-oauth2',
-    version='1.3.0',
+    version='1.3.1',
     description='A django app that replaces the django admin authentication mechanism by deferring to an oauth2 provider',
     long_description=README,
+    long_description_content_type='text/markdown',
     url='https://github.com/RealGeeks/django-admin-oauth2',
     author='Real Geeks LLC',
     author_email='andrew@realgeeks.com',

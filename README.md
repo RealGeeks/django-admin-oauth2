@@ -76,6 +76,7 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 ## Changelog
 
+- 1.3.1: Update setup.py so pypi README docs are formatted
 - 1.3.0: Add support for `JSONSerializer`
 - 1.2.1: Add support for django 4, retain backwards compat with Django 1.x
 - 1.2.0: Allow overriding oauth scope with new parameter, OAUTHADMIN_SCOP
