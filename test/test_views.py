@@ -206,10 +206,20 @@ def test_callback_redirect_to_next(import_by_path, mock_serialized_json_user, ap
 
 @mock.patch('oauthadmin.views.OAuth2Session')
 @mock.patch('oauthadmin.views.app_setting')
-def test_logout(app_setting, OAuth2Session, request_factory):
+def test_logout_redirects(app_setting, OAuth2Session, request_factory):
     request = request_factory.get('/')
     request.session = {'oauth_token': 'token'}
     app_setting.return_value = 'app-setting'
     resp = logout(request)
     assert resp.status_code == 302
     assert resp['Location'] == 'http://testserver/'
+
+@mock.patch('oauthadmin.views.OAuth2Session')
+@mock.patch('oauthadmin.views.app_setting')
+def test_logout_destroys_session(app_setting, OAuth2Session, request_factory):
+    request = request_factory.get('/')
+    request.session = {'oauth_token': 'token'}
+    app_setting.return_value = 'app-setting'
+    assert request.session.get('oauth_token') == 'token'
+    resp = logout(request)
+    assert request.session.get('oauth_token') == None
