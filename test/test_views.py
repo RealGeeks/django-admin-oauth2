@@ -64,10 +64,12 @@ def test_login(app_setting, OAuth2Session, request_factory):
     assert request.session.get('oauth_state') == _state('state-variable').decode('utf-8')
 
 @mock.patch('oauthadmin.views.OAuth2Session')
-def test_login_redirect_uri(OAuth2Session, request_factory):
+@mock.patch('oauthadmin.views.generate_token')
+def test_login_redirect_uri(generate_token, OAuth2Session, request_factory):
     OAuth2Session.return_value = mock.Mock(
         authorization_url = mock.Mock(return_value = ('https://foo', _state('state-variable')))
     )
+    generate_token.return_value = '1234'
     request = request_factory.get(reverse(oauthadmin.views.login))
     request.session = {}
     request.build_absolute_uri = mock.Mock(return_value='https://test.com/construct-redirect')
@@ -78,14 +80,16 @@ def test_login_redirect_uri(OAuth2Session, request_factory):
         client_id = 'test-client-id',
         redirect_uri = u'https://test.com/construct-redirect',
         scope = ['default'],
-        state = mock.ANY,
+        state = base64.b64encode(json.dumps({"state": '1234', "next": None}).encode('utf-8')),
     )
 
 @mock.patch('oauthadmin.views.OAuth2Session')
-def test_login_redirect_uri_with_next_from_url(OAuth2Session, request_factory):
+@mock.patch('oauthadmin.views.generate_token')
+def test_login_redirect_uri_with_next_from_url(generate_token, OAuth2Session, request_factory):
     OAuth2Session.return_value = mock.Mock(
         authorization_url = mock.Mock(return_value = ('https://foo', _state('state-variable')))
     )
+    generate_token.return_value = '1234'
     request = request_factory.get(reverse(oauthadmin.views.login) + '?next=/admin/content/')
     request.session = {}
     request.build_absolute_uri = mock.Mock(return_value='https://test.com/construct-redirect')
@@ -96,14 +100,16 @@ def test_login_redirect_uri_with_next_from_url(OAuth2Session, request_factory):
         redirect_uri = u'https://test.com/construct-redirect',
         client_id = mock.ANY,
         scope = mock.ANY,
-        state = mock.ANY,
+        state = base64.b64encode(json.dumps({"state": '1234', "next": '/admin/content/'}).encode('utf-8')),
     )
 
 @mock.patch('oauthadmin.views.OAuth2Session')
-def test_login_redirect_uri_with_next_as_current_url(OAuth2Session, request_factory):
+@mock.patch('oauthadmin.views.generate_token')
+def test_login_redirect_uri_with_next_as_current_url(generate_token, OAuth2Session, request_factory):
     OAuth2Session.return_value = mock.Mock(
         authorization_url = mock.Mock(return_value = ('https://foo', _state('state-variable')))
     )
+    generate_token.return_value = '1234'
     request = request_factory.get('/admin/content/')
     request.session = {}
     request.build_absolute_uri = mock.Mock(return_value='https://test.com/construct-redirect')
@@ -114,7 +120,7 @@ def test_login_redirect_uri_with_next_as_current_url(OAuth2Session, request_fact
         redirect_uri = u'https://test.com/construct-redirect',
         client_id = mock.ANY,
         scope = mock.ANY,
-        state = mock.ANY,
+        state = base64.b64encode(json.dumps({"state": '1234', "next": '/admin/content/'}).encode('utf-8')),
     )
 
 
