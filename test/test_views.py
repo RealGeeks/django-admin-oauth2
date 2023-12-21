@@ -8,6 +8,8 @@ from django.test.client import RequestFactory
 from django.contrib.auth.models import User
 import oauthadmin.views
 
+from test.utils import serialize_user
+
 try:
     from django.urls import reverse
 except ImportError:
@@ -163,7 +165,17 @@ def test_callback(import_by_path, mock_serialized_json_user, app_setting, OAuth2
     OAuth2Session.return_value = mock.Mock(
         fetch_token = mock.Mock(return_value = 'token')
     )
+    # breakpoint()
     app_setting.return_value = 'app-setting'
+    app_setting.side_effect = [
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        '',
+        'app-setting',
+    ]
     ibp = mock.Mock()
     ibp.return_value = User(id=1)
     import_by_path.return_value = ibp
@@ -188,7 +200,15 @@ def test_callback_redirect_to_next(import_by_path, mock_serialized_json_user, ap
     OAuth2Session.return_value = mock.Mock(
         fetch_token = mock.Mock(return_value = 'token')
     )
-    app_setting.return_value = 'app-setting'
+    app_setting.side_effect = [
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        '',
+        'app-setting',
+    ]
     ibp = mock.Mock()
     ibp.return_value = User(id=1)
     import_by_path.return_value = ibp
@@ -199,6 +219,44 @@ def test_callback_redirect_to_next(import_by_path, mock_serialized_json_user, ap
     resp = callback(request)
     
     mock_serialized_json_user.assert_called_once_with("json", [User(id=1)])
+    assert request.session.get('user') == serialized_user
+
+    assert resp.status_code == 302
+    assert resp['location'] == 'http://testserver/admin/content/'
+
+@mock.patch('oauthadmin.views.OAuth2Session')
+@mock.patch('oauthadmin.views.app_setting')
+@mock.patch('test.utils.serialize_user', wraps=serialize_user)
+@mock.patch('oauthadmin.views.import_by_path')
+def test_callback_redirect_to_next_uses_custom_serializer(import_by_path, mock_custom_serialized_json_user, app_setting, OAuth2Session, request_factory):
+    request = request_factory.get(reverse(oauthadmin.views.callback))
+    request.session = {'oauth_state': _state('state-variable','/admin/content/')}
+    OAuth2Session.return_value = mock.Mock(
+        fetch_token = mock.Mock(return_value = 'token')
+    )
+    app_setting.side_effect = [
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        'app-setting',
+        'test.utils.serialize_user',
+        'app-setting',
+    ]
+    ibp_get_user = mock.Mock()
+    ibp_get_user.return_value = User(id=1)
+    ibp_serialize_user = mock.Mock()
+    serialized_user = '[{"wibble": "wobble"}]'
+    ibp_serialize_user.return_value = serialized_user
+    import_by_path.side_effect = [
+        ibp_get_user,
+        mock_custom_serialized_json_user
+    ]
+
+
+    resp = callback(request)
+    
+    mock_custom_serialized_json_user.assert_called_once_with(User(id=1))
     assert request.session.get('user') == serialized_user
 
     assert resp.status_code == 302

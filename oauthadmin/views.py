@@ -84,7 +84,12 @@ def callback(request):
         return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
 
     user = import_by_path(app_setting('GET_USER'))(token)
-    serialized_user = serializers.serialize("json", [user])
+    serialize_function = app_setting('SERIALIZE_USER')
+    if serialize_function:
+        serialized_user = import_by_path(serialize_function)(user)
+    else:
+        serialized_user = serializers.serialize("json", [user])
+
 
     request.session['last_verified_at'] = int(time())
     request.session['oauth_token'] = token

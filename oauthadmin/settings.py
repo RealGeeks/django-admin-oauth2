@@ -3,6 +3,7 @@ from django.conf import settings as global_settings
 defaults = {
     # default values for all django-oauth2-admin settings
     "GET_USER": 'oauthadmin.stubs.get_user',
+    "SERIALIZE_USER": '',
     "PING_INTERVAL": 300,
     "OAUTHADMIN_DEFAULT_NEXT_URL": "/admin/",
     "SCOPE": ['default'],
