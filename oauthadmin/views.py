@@ -11,7 +11,7 @@ except ImportError:
     from urllib.parse import quote_plus
 
 from django.shortcuts import redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core import serializers
 
 from oauthadmin.utils import import_by_path
