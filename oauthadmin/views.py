@@ -84,6 +84,10 @@ def callback(request):
         return HttpResponseRedirect(request.build_absolute_uri(reverse(oauthadmin.views.login)))
 
     user = import_by_path(app_setting('GET_USER'))(token)
+
+    if user.is_anonymous():
+        return HttpResponseRedirect(reverse(oauthadmin.views.no_permissions))
+
     serialized_user = serializers.serialize("json", [user])
 
     request.session['last_verified_at'] = int(time())
@@ -109,3 +113,9 @@ def logout(request):
 
 def logout_redirect(request):
     return redirect(app_setting('BASE_URL') + 'logout?next=' + quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout))))
+
+
+def no_permissions(request):
+    logout_url = app_setting('BASE_URL') + 'logout?next=' + quote_plus(request.build_absolute_uri(reverse(oauthadmin.views.logout)))
+    return HttpResponse('Sorry, your user does not have permission to access this application.  Please <a href="{0}">Log Out</a> and try again'.format(logout_url))
+

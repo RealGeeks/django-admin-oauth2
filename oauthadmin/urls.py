@@ -11,4 +11,5 @@ urlpatterns = [
     url(r"callback/", oauthadmin.views.callback),
     url(r"logout/", oauthadmin.views.logout),
     url(r"logout_redirect/", oauthadmin.views.logout_redirect),
+    url(r"no_permissions/", oauthadmin.views.no_permissions),
 ]
