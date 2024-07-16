@@ -85,7 +85,7 @@ def callback(request):
 
     user = import_by_path(app_setting('GET_USER'))(token)
 
-    if user.is_anonymous():
+    if user.is_anonymous:
         return HttpResponseRedirect(reverse(oauthadmin.views.no_permissions))
 
     serialized_user = serializers.serialize("json", [user])

@@ -76,6 +76,7 @@ When the CSRF validation token doesn't match, django-admin-oauth2 will redirect 
 
 ## Changelog
 
+- 1.3.4: Bugfix: is_anonymous is now an attribute, fixes Django 2.0+
 - 1.3.3: Bugfix: forgot import in view
 - 1.3.2: Fix bug: Don't try to serialize an anonymous user
 - 1.3.1: Update setup.py so pypi README docs are formatted
